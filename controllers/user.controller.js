@@ -1,5 +1,8 @@
 import {User} from "../models/user.model.js";
 import bcrypt from "bcryptjs"
+import jwt from 'jsonwebtoken';
+
+
 
 export const register = async (req, res) =>{
     try {
@@ -49,3 +52,73 @@ export const register = async (req, res) =>{
         })
     }
 }
+
+export const login = async (req,res) =>{
+    try {
+
+        const {email, password } = req.body;
+
+        if (!email || !password){
+            return res.status(400).json({
+                message:"Some thing is missing !",
+                success: false,
+            });
+        }
+        let user = await User.findOne({ email })
+
+        if (!user){
+            return res.status(400).json({
+                message:"Incorrect email or password",
+                success:false,
+
+            })
+        }
+
+        const isPasswordMatched = await bcrypt.compare(password, user.password);
+        if (!isPasswordMatched){
+            return res.stat(200).json({
+                message:"User name and the password in not matched please check"
+                success: false,
+
+            })
+        }
+
+         const token = jwt.sign({userId:user._id}, process.env.SECRET_KEY,{
+             expiresIn: '1d'
+         });
+
+        user= {
+            _id: user._id,
+            fullName:user.fullName,
+            email:user.email,
+            phoneNumber:user.phoneNumber,
+            role:user.role,
+            profilePhoto:user.profilePhoto
+        }
+
+        return res.cookie("token", token,{
+            httpOnly: true,
+            secure: true,
+            sameSite:"none",
+            maxAge: 24 * 60 * 60 *100,
+        }).status(200).json({
+            message: `Welcome back ${user.fullName}`,
+            user,
+            success:true,
+
+        })
+
+
+
+    } catch (err){
+        console.log("Some thing went to wrong", err )
+        return res.status(500).json({
+            message:"Something went to wrong while Login time ",
+            success: false
+        })
+    }
+}
+
+
+
+
