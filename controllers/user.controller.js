@@ -122,3 +122,28 @@ export const login = async (req,res) =>{
 
 
 
+export  const getUserProfile = async (req, res) =>{
+    try {
+        const userId = req.id;
+        const user = await User.findById(userId).select("-password");
+        if (!user){
+            return res.status(404).json({
+                message:"User profile not found ",
+                success: false,
+
+            })
+
+        }
+        return res.status(200).json({
+            message:"The userProfile is getSuccessfully"
+            success:true,
+        })
+
+    } catch (err){
+        console.log("Some thing went to wrong", err )
+        return res.status(500).json({
+            message:"Something went to wrong while getUserProfile time ",
+            success: false
+        })
+    }
+}
