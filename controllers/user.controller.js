@@ -4,54 +4,46 @@ import jwt from 'jsonwebtoken';
 
 
 
-export const register = async (req, res) =>{
+export const register = async (req, res) => {
     try {
-         const {fullName, email, password, phoneNumber} = req.body;
+        const { fullName, email, password, phoneNumber } = req.body;
 
-          if (!fullName || !email || !password || !phoneNumber){
-              return  res.status(400).json({
-                  message:"Some filed is missing please  check the filed ",
-                  success: false
-              });
-
-          }
-
-          const existingUser =  await User.findOne({ email })
-        if (existingUser){
+        if (!fullName || !email || !password || !phoneNumber) {
             return res.status(400).json({
-                message:"The email id or the account have already existing please check the mail once more ",
-                success: false
-
-            })
+                message: "Some field is missing, please check all fields",
+                success: false,
+            });
         }
-        let profilePhoto = "";
 
-        const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt value
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({
+                message: "User already exists with this email.",
+                success: false,
+            });
+        }
 
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({
             fullName,
             email,
             phoneNumber,
-            password:hashedPassword,
-            profilePhoto
+            password: hashedPassword,
+        });
 
-
-        })
-
-        return res.status(200).json({
-            message:"The account is created successfully",
-            success:true
-        })
-
-    } catch (err){
-        console.log("Some thing went to wrong", err )
+        return res.status(201).json({
+            message: "The account is created successfully",
+            success: true,
+        });
+    } catch (err) {
+        console.error("Something went wrong", err);
         return res.status(500).json({
-            message:"Something went to wrong while register time ",
-            success: false
-        })
+            message: "Something went wrong while registering",
+            success: false,
+        });
     }
-}
+};
 
 export const login = async (req,res) =>{
     try {
@@ -122,31 +114,24 @@ export const login = async (req,res) =>{
 
 
 
-export  const getUserProfile = async (req, res) =>{
+
+
+export const getUserProfile = async (req, res) => {
     try {
-        const userId = req.id;
+        const userId = req.user._id;
         const user = await User.findById(userId).select("-password");
-        if (!user){
-            return res.status(404).json({
-                message:"User profile not found ",
-                success: false,
 
-            })
-
+        if (!user) {
+            return res.status(404).json({ success: false, message: "Profile not found" });
         }
-        return res.status(200).json({
-            message:"The userProfile is getSuccessfully",
-            success:true,
-        })
 
-    } catch (err){
-        console.log("Some thing went to wrong", err )
-        return res.status(500).json({
-            message:"Something went to wrong while getUserProfile time ",
-            success: false
-        })
+        return res.status(200).json({ success: true, user });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Failed to load user" });
     }
-}
+};
+
 
 
 export const logout = async (req, res) =>{
