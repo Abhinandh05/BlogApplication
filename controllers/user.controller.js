@@ -77,7 +77,7 @@ export const login = async (req,res) =>{
         const isPasswordMatched = await bcrypt.compare(password, user.password);
         if (!isPasswordMatched){
             return res.stat(200).json({
-                message:"User name and the password in not matched please check"
+                message:"User name and the password in not matched please check",
                 success: false,
 
             })
@@ -135,7 +135,7 @@ export  const getUserProfile = async (req, res) =>{
 
         }
         return res.status(200).json({
-            message:"The userProfile is getSuccessfully"
+            message:"The userProfile is getSuccessfully",
             success:true,
         })
 
