@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import connectDB from './config/db.js'
 import userRoute from './routes/user.routes.js'
 import postRoute from  './routes/post.routes.js'
+import commentRoute from "./routes/comment.routes.js";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/posts", postRoute);
+app.use("/api/v1/comment", commentRoute)
 
 
 
