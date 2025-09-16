@@ -73,3 +73,44 @@ export const updatePost = async (req, res) =>{
     }
 
 }
+
+// delete the post
+
+export const deletePost = async (req, res) =>{
+    try{
+        const {id} = req.params;
+
+        const post = await  Post.findById(id);
+
+        if (!post){
+            return  res.status(400).json({
+                message:"Post not found ",
+                success: false,
+            })
+        }
+
+        //check the current user is
+        if (post.author.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                message: "Unauthorized" ,
+                success:false
+            });
+        }
+
+        await post.deleteOne();
+
+       res.status(201).json({
+            message:"Post is deleted successfully "
+        })
+
+
+
+
+    } catch (err){
+        console.log("Something went to wrong while deleting the post ")
+
+        return res.status(500).json({
+            message:"Internal server error"
+        })
+    }
+}
