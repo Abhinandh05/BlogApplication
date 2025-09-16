@@ -1,0 +1,51 @@
+import {User} from "../models/user.model.js";
+
+
+export const getAllUser = async (req, res) =>{
+    try{
+        const users =  await User.find().select("-password");
+        res.status.(200).json({
+            message:"get the user",
+            success: true,
+            users
+        })
+    } catch (err){
+        console.log("Something went to wrong ")
+        return res.status(500).json({
+            message:"Internal server error",
+            success: false
+        })
+    }
+}
+
+// update the user by the id
+
+export const updateUser = async (req, res) =>{
+    try{
+
+        const {id} = req.params;
+        const updates = req.body;
+        const user = await User.findByIdAndUpdate(id, updates, {new: true}).select("-password")
+
+        if (!user){
+            return res.status(404).json({
+                message:"User Not found ",
+                success: false
+            })
+        }
+
+        return res.status(200).json({
+            message:"The user updated success fully",
+            success: true,
+            user
+        })
+
+    } catch (err){
+        console.log("Something went to wrong ")
+        return res.status(500).json({
+            message:"Internal server error",
+            success: false
+        })
+    }
+}
+
