@@ -114,3 +114,24 @@ export const deletePost = async (req, res) =>{
         })
     }
 }
+
+
+// get all the post
+
+export const getPost = async (req, res) =>{
+    try {
+        const posts = await Post.find()
+            .populate("author", "fullName")
+            .sort({createdAt: -1})
+
+        res.json(posts);
+
+    } catch (err){
+        console.log("Some thing went to wrong while getThe post")
+        return res.status(500).json({
+            message:"Internal server Error",
+            success: false,
+        })
+    }
+
+}
