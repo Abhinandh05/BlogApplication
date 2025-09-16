@@ -31,3 +31,45 @@ export  const createPost = async (req, res) =>{
 }
 
 // update the post
+export const updatePost = async (req, res) =>{
+    try {
+
+        const { id } = req.params;
+        const {title, content}= req.body;
+
+        const post = await Post.findById(id);
+
+        if (!post){
+            return res.status(400).json({
+                message:"Post not found",
+                success: false,
+            })
+        }
+        // check the current user is the author
+        if (post.author.toString() !== req.user._id.toString()){
+            return res.status(403).json({
+                message:"Unauthorized",
+                success:false
+            })
+        }
+
+        post.title = title || post.title;
+        post.content = content || post.content;
+
+        await post.save();
+
+        return res.status(200).json({
+            message:"PostUpdated successfully",
+            post,
+        })
+
+    } catch (err){
+        console.log("Something went to wrong while updating the post ")
+
+        return res.status(500).json({
+            message:"Internal server error updatePost",
+            success: false
+        })
+    }
+
+}
