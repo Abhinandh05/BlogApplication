@@ -20,6 +20,12 @@ export  const createPost = async (req, res) =>{
 
         await post.save(); // save the post
 
+        return res.status(201).json({
+            message:"The post was created successfully",
+            success:true,
+            post
+        })
+
 
     } catch (err){
         console.log("Some thing went to wrong while creating the post");
@@ -99,7 +105,7 @@ export const deletePost = async (req, res) =>{
 
         await post.deleteOne();
 
-       res.status(201).json({
+      return  res.status(201).json({
             message:"Post is deleted successfully "
         })
 
@@ -118,13 +124,17 @@ export const deletePost = async (req, res) =>{
 
 // get all the post
 
-export const getPost = async (req, res) =>{
+export const getAllPost = async (req, res) =>{
     try {
         const posts = await Post.find()
             .populate("author", "fullName")
             .sort({createdAt: -1})
 
-        res.json(posts);
+     return res.status(201).json({
+         message:"getAll the post ",
+         success:true,
+         posts
+     })
 
     } catch (err){
         console.log("Some thing went to wrong while getThe post")
@@ -133,5 +143,36 @@ export const getPost = async (req, res) =>{
             success: false,
         })
     }
+
+}
+
+// get one post
+
+export const getPostById = async (req, res) =>{
+
+    try{
+        const {id} = req.params;
+        const post = await Post.findById(id).populate("author", 'fullName');
+        if (!post){
+            return res.status(400).json({
+                message:"The post not found ",
+                success: false
+            })
+        }
+
+        return res.status(201).json({
+            message:"get single post ",
+            success:true,
+            post
+        })
+    } catch (err){
+        console.log("some thing went to wrong ")
+        return res.status(500).json({
+            message:"Internal server error ",
+            success: false
+        })
+    }
+
+
 
 }
