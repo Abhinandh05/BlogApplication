@@ -4,7 +4,7 @@ import {User} from "../models/user.model.js";
 export const getAllUser = async (req, res) =>{
     try{
         const users =  await User.find().select("-password");
-        res.status.(200).json({
+        return res.status(200).json({
             message:"get the user",
             success: true,
             users
@@ -49,3 +49,19 @@ export const updateUser = async (req, res) =>{
     }
 }
 
+// delete the user by id
+
+export const deleteUser = async (res, req) =>{
+    try {
+        const {id} = req.params;
+
+        const user = await User.findByIdAndDelete(id)
+
+    } catch (err){
+        console.log("Something went to wrong ")
+        return res.status(500).json({
+            message:"Internal server error",
+            success: false
+        })
+    }
+}
