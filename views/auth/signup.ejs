@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheCubeFactory - Sign Up</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Left Section */
+        .left-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            background: #fff;
+        }
+
+        .signup-box {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .signup-box h2 {
+            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #1a1a1a;
+            text-align: center;
+        }
+
+        .signup-box p.subtitle {
+            margin-bottom: 25px;
+            font-size: 15px;
+            color: #666;
+            text-align: center;
+        }
+
+        .signup-box form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .signup-box label {
+            font-size: 14px;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .signup-box input {
+            padding: 14px;
+            margin-bottom: 6px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .signup-box input:focus {
+            outline: none;
+            border-color: #8b5fbf;
+            box-shadow: 0 0 0 3px rgba(139, 95, 191, 0.1);
+        }
+
+        .signup-box button {
+            padding: 14px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #8b5fbf 0%, #b589d6 100%);
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .signup-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 95, 191, 0.3);
+        }
+
+        p.error {
+            color: #d63384;
+            background: #fee;
+            border-left: 4px solid #d63384;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .signup-box p {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .signup-box a {
+            color: #8b5fbf;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-box a:hover {
+            text-decoration: underline;
+        }
+
+        /* Right Section */
+        .right-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #8b5fbf 0%, #b589d6 100%);
+            padding: 20px;
+        }
+
+        .illustration img {
+            max-width: 85%;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            transition: transform 0.3s ease;
+        }
+
+        .illustration img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            .right-section {
+                order: -1;
+                padding: 30px;
+            }
+            .illustration img {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Left Section -->
+    <div class="left-section">
+        <div class="signup-box">
+            <h2>Create a New Account</h2>
+            <p class="subtitle">Join our blogging community today</p>
+            <form method="POST" action="/api/v1/user/register">
+                <label>Full Name</label>
+                <input type="text" name="fullName" placeholder="Your full name" required />
+
+                <label>Email</label>
+                <input type="email" name="email" placeholder="Your email" required />
+
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Enter password" required />
+
+                <label>Phone Number</label>
+                <input type="text" name="phoneNumber" placeholder="Your phone number" required />
+
+                <button type="submit">Sign Up</button>
+            </form>
+
+            <% if (error) { %>
+                <p class="error"><%= error %></p>
+            <% } %>
+
+            <p>Already have an account? <a href="/login">Login here</a></p>
+        </div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="right-section">
+        <div class="illustration">
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop&crop=center"
+                 alt="Creative workspace for blogging">
+        </div>
+    </div>
+</div>
+</body>
+</html>

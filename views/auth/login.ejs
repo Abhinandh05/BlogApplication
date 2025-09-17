@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog application</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            background: #f8f9fa;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .left-section {
+            flex: 1;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            max-width: 500px;
+        }
+
+        .right-section {
+            flex: 1;
+            background: linear-gradient(135deg, #8b5fbf 0%, #b589d6 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 60px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #8b5fbf 0%, #b589d6 100%);
+            border-radius: 8px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-squares {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+            width: 16px;
+            height: 16px;
+        }
+
+        .logo-square {
+            background: white;
+            border-radius: 2px;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .welcome-subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #8b5fbf;
+            box-shadow: 0 0 0 3px rgba(139, 95, 191, 0.1);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .remember-me input[type="checkbox"] {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            accent-color: #8b5fbf;
+        }
+
+        .forgot-password {
+            color: #8b5fbf;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .signin-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #8b5fbf 0%, #b589d6 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 32px;
+        }
+
+        .signin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 95, 191, 0.3);
+        }
+
+
+
+        .signup-link {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: #8b5fbf;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #d63384;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border-left: 4px solid #d63384;
+            font-size: 14px;
+        }
+
+        .illustration {
+            position: relative;
+            z-index: 2;
+        }
+
+        .person-illustration {
+            width: 300px;
+            height: 400px;
+            position: relative;
+        }
+
+        .person {
+            width: 200px;
+            height: 300px;
+            background: #1a1a1a;
+            border-radius: 100px 100px 50px 50px;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .person::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #f8f9fa;
+            border-radius: 50%;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .person::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 20px;
+            background: #8b5fbf;
+            border-radius: 10px;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .background-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+        }
+
+        .pattern-element {
+            position: absolute;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+
+        .pattern-element:nth-child(1) { width: 60px; height: 60px; top: 10%; left: 15%; }
+        .pattern-element:nth-child(2) { width: 40px; height: 40px; top: 20%; right: 20%; }
+        .pattern-element:nth-child(3) { width: 80px; height: 80px; bottom: 30%; left: 10%; }
+        .pattern-element:nth-child(4) { width: 30px; height: 30px; bottom: 20%; right: 15%; }
+        .pattern-element:nth-child(5) { width: 50px; height: 50px; top: 50%; left: 5%; }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .right-section {
+                order: -1;
+                min-height: 200px;
+                flex: none;
+            }
+
+            .left-section {
+                padding: 40px 30px;
+            }
+
+            .blog-workspace {
+                width: 280px;
+                height: 280px;
+            }
+
+            .workspace-image {
+                width: 250px;
+                height: 200px;
+            }
+
+            .floating-elements {
+                display: none;
+            }
+
+            .blog-elements {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="left-section">
+        <div class="logo">
+            <div class="logo-icon">
+                <div class="logo-squares">
+                    <div class="logo-square"></div>
+                    <div class="logo-square"></div>
+                    <div class="logo-square"></div>
+                    <div class="logo-square"></div>
+                </div>
+            </div>
+            InkSphere
+        </div>
+
+        <div class="welcome-title">Welcome back</div>
+        <div class="welcome-subtitle">Please enter your details</div>
+
+<!--        <% if (typeof error !== 'undefined' && error) { %>-->
+<!--            <div class="error-message"><%= error %></div>-->
+<!--        <% } %>-->
+
+        <form method="POST" action="/api/v1/user/login">
+            <div class="form-group">
+                <label class="form-label">Email address</label>
+                <input type="email" name="email" class="form-input" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-input" required />
+            </div>
+
+            <div class="form-options">
+
+                <a href="#" class="forgot-password">Forgot password</a>
+            </div>
+
+            <button type="submit" class="signin-btn">Sign in</button>
+        </form>
+
+
+
+        <div class="signup-link">
+            Don't have an account? <a href="/signup">Sign up</a>
+        </div>
+    </div>
+
+    <div class="right-section">
+        <div class="background-pattern">
+            <div class="pattern-element"></div>
+            <div class="pattern-element"></div>
+            <div class="pattern-element"></div>
+            <div class="pattern-element"></div>
+            <div class="pattern-element"></div>
+        </div>
+        <div class="illustration">
+            <div class="workspace-image">
+                <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=600&h=400&fit=crop&crop=center"
+                     alt="Blogging workspace"
+                     style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.15);"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+                <div style="display: none; align-items: center; justify-content: center; height: 100%; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); color: #6c757d; font-weight: 600; border-radius: 12px;">
+                    📝 Blog Workspace
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

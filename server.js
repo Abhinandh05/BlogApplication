@@ -18,10 +18,14 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true}))
 app.use(cookieParser());
 
+
+app.set("view engine", "ejs");
+app.set("views", "./views");
+
 // api calls
 
 app.use("/api/v1/user", userRoute);
-app.use("/api/v1/posts", postRoute);
+app.use("/", postRoute);
 app.use("/api/v1/comment", commentRoute)
 app.use("/api/v1/admin", adminRoutes)
 
@@ -40,7 +44,16 @@ app.listen(PORT, async () =>{
 
 })
 
-app.get("/", (_,res) =>{
-    res.send("Api is working correctly")
-})
+app.get("/", (_, res) => {
+    res.render("index", { message: "API + EJS running successfully!" });
+});
+app.get("/login", (req, res) => {
+    res.render("auth/login", { error: null });
+});
+app.get("/signup", (req, res) => {
+    res.render("auth/signup", { error: null });
+});
+app.get("/create", (req, res) => {
+    res.render("posts/createpost", { error: null });
+});
 

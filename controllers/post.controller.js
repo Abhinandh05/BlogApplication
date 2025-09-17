@@ -20,11 +20,7 @@ export  const createPost = async (req, res) =>{
 
         await post.save(); // save the post
 
-        return res.status(201).json({
-            message:"The post was created successfully",
-            success:true,
-            post
-        })
+        return res.redirect("/");
 
 
     } catch (err){
@@ -130,11 +126,7 @@ export const getAllPost = async (req, res) =>{
             .populate("author", "fullName")
             .sort({createdAt: -1})
 
-     return res.status(201).json({
-         message:"getAll the post ",
-         success:true,
-         posts
-     })
+        res.render("index", { message: "All Blog Posts", posts });
 
     } catch (err){
         console.log("Some thing went to wrong while getThe post")
@@ -160,11 +152,7 @@ export const getPostById = async (req, res) =>{
             })
         }
 
-        return res.status(201).json({
-            message:"get single post ",
-            success:true,
-            post
-        })
+        res.render("posts/singlepost", { post });
     } catch (err){
         console.log("some thing went to wrong ")
         return res.status(500).json({
