@@ -15,11 +15,11 @@ export const seedAdmin = async (req, res) =>{
              })
          }
 
-         const hashedPassed = await bcrypt.hash("admin@123" ,10 )
+         const hashedPassed = await bcrypt.hash( process.env.ADMIN_PASS ,10 )
 
          const admin = await User.create({
              fullName:"Main Admin",
-             email:"abhinandhc407@gmail.com",
+             email: process.env.ADMIN_EMAIL,
              password:hashedPassed,
              phoneNumber:89098787,
              role:"admin"
