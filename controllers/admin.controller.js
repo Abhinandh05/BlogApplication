@@ -7,11 +7,12 @@ import CommentRoutes from "../routes/comment.routes.js";
 export const getAllUser = async (req, res) =>{
     try{
         const users =  await User.find().select("-password");
-        return res.status(200).json({
-            message:"get the user",
+        return res.render("admin/allUser", {
+            title: "All Users",
+            users,
+            message: "Users list",
             success: true,
-            users
-        })
+        });
     } catch (err){
         console.log("Something went to wrong ")
         return res.status(500).json({
