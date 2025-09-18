@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Post</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #3498db;
+        }
+
+        /* Form container */
+        .form-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 120px; /* Push form below navbar */
+        }
+
+        .form-container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #3498db;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        button {
+            background: #3498db;
+            color: #fff;
+            padding: 0.9rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: #3498db;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Success/Error Messages */
+        .message {
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Form Section -->
+<div class="form-wrapper">
+    <div class="form-container">
+        <h1>Update Post</h1>
+
+        <!-- Success/Error Message Display -->
+        <% if (typeof message !== 'undefined') { %>
+            <div class="message <%= messageType || 'success' %>">
+                <%= message %>
+            </div>
+        <% } %>
+
+        <!-- Updated form action to use POST without method override -->
+        <form action="/api/v1/admin/posts/<%= post._id %>/update" method="POST">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value="<%= post.title %>"
+                        required
+                        placeholder="Enter post title..."
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="content">Content</label>
+                <textarea
+                        id="content"
+                        name="content"
+                        required
+                        placeholder="Write your post content here..."
+                ><%= post.content %></textarea>
+            </div>
+
+            <button type="submit">Update Post</button>
+        </form>
+
+        <a href="/api/v1/admin" class="back-link">← Back to Admin Dashboard</a>
+    </div>
+</div>
+
+<script>
+    // Handle form submission with better UX
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const button = this.querySelector('button[type="submit"]');
+        button.textContent = 'Updating...';
+        button.disabled = true;
+
+        // Re-enable button after 3 seconds in case of error
+        setTimeout(() => {
+            button.textContent = 'Update Post';
+            button.disabled = false;
+        }, 3000);
+    });
+</script>
+</body>
+</html>

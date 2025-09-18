@@ -60,10 +60,7 @@ export const updatePost = async (req, res) =>{
 
         await post.save();
 
-        return res.status(200).json({
-            message:"PostUpdated successfully",
-            post,
-        })
+        return res.redirect(`/single/${post._id}`);
 
     } catch (err){
         console.log("Something went to wrong while updating the post ")
@@ -126,7 +123,7 @@ export const getAllPost = async (req, res) =>{
             .populate("author", "fullName")
             .sort({createdAt: -1})
 
-        res.render("index", { message: "All Blog Posts", posts });
+        res.render("index", { message: "All Blog Posts", posts, user:req.user });
 
     } catch (err){
         console.log("Some thing went to wrong while getThe post")
@@ -164,3 +161,25 @@ export const getPostById = async (req, res) =>{
 
 
 }
+
+// render the update form
+export const renderUpdateForm = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const post = await Post.findById(id);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        // Only author can edit
+        if (post.author.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        res.render("posts/update", { post });
+    } catch (err) {
+        console.log("Error loading update form", err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};

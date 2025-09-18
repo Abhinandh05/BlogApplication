@@ -7,6 +7,7 @@ import postRoute from  './routes/post.routes.js'
 import commentRoute from "./routes/comment.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 
+
 dotenv.config();
 
 const app = express();
@@ -56,4 +57,8 @@ app.get("/signup", (req, res) => {
 app.get("/create", (req, res) => {
     res.render("posts/createpost", { error: null });
 });
+app.get("/admin", (req, res) => {
+    res.render("admin/dashboard", { error: null });
+});
+
 

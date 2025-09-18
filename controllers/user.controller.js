@@ -75,7 +75,11 @@ export const login = async (req, res) => {
         });
 
 
-        return res.redirect("/");
+       if (user.role === 'admin'){
+           return res.redirect('/admin')
+       } else {
+           return res.redirect('/')
+       }
 
     } catch (err) {
         console.log("Something went wrong", err);
@@ -109,18 +113,14 @@ export const getUserProfile = async (req, res) => {
 
 export const logout = async (req, res) =>{
     try{
-        return res
+        res
             .cookie("token", "", {
                 httpOnly: true,
                 secure: true,
                 sameSite: "None",
                 expires: new Date(0)
             })
-            .status(200)
-            .json({
-                message: "Logged out successfully.",
-                success: true
-            });
+        return res.redirect("/login");
 
     }catch (err){
         console.log("Some thing went to wrong", err )
