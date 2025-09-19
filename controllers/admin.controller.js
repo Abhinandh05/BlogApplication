@@ -132,9 +132,17 @@ export const updatePost = async (req, res) => {
         const { id } = req.params;
         const { title, content } = req.body;
 
+        // Prepare update object
+        let updateData = { title, content };
+
+        // If new image is uploaded, add it to update data
+        if (req.file) {
+            updateData.image = `/uploads/${req.file.filename}`;
+        }
+
         const post = await Post.findByIdAndUpdate(
             id,
-            { title, content },
+            updateData,
             { new: true }
         );
 

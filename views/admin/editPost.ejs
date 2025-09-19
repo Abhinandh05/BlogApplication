@@ -91,6 +91,7 @@
         }
 
         input[type="text"],
+        input[type="file"],
         textarea {
             width: 100%;
             padding: 0.8rem;
@@ -103,6 +104,7 @@
         }
 
         input[type="text"]:focus,
+        input[type="file"]:focus,
         textarea:focus {
             border-color: #3498db;
         }
@@ -161,6 +163,19 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+
+        .current-image {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .current-image img {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -177,8 +192,8 @@
             </div>
         <% } %>
 
-        <!-- Updated form action to use POST without method override -->
-        <form action="/api/v1/admin/posts/<%= post._id %>/update" method="POST">
+
+        <form action="/api/v1/admin/posts/<%= post._id %>/update" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title">Title</label>
                 <input
@@ -199,6 +214,17 @@
                         required
                         placeholder="Write your post content here..."
                 ><%= post.content %></textarea>
+            </div>
+
+            <% if (post.image) { %>
+                <div class="current-image">
+                    <img src="<%= post.image %>" alt="Current Post Image" />
+                </div>
+            <% } %>
+
+            <div class="form-group">
+                <label for="image">Upload  Image</label>
+                <input type="file" id="image" name="image" accept="image/*" />
             </div>
 
             <button type="submit">Update Post</button>

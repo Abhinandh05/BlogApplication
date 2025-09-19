@@ -15,6 +15,7 @@ export  const createPost = async (req, res) =>{
         const post = new Post({
             title,
             content,
+            image: req.file ? `/uploads/${req.file.filename}` : "",
             author:req.user._id
         })
 
@@ -57,6 +58,10 @@ export const updatePost = async (req, res) =>{
 
         post.title = title || post.title;
         post.content = content || post.content;
+
+        if (req.file) {
+            post.image = `/uploads/${req.file.filename}`;
+        }
 
         await post.save();
 

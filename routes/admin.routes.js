@@ -10,6 +10,7 @@ import {
     updateUser
 } from "../controllers/admin.controller.js";
 import {seedAdmin} from "../seeds/admin.seed.js";
+import {upload} from "../middleware/uploadMiddleware.js";
 
 
 const router = express.Router();
@@ -25,8 +26,8 @@ router.delete('/user/:id', isAuthenticated, isAdmin, deleteUser)
 // post controller
 
 router.get('/posts', isAuthenticated, isAdmin, getAllPost)
-router.get('/posts/:id/edit', isAuthenticated, isAdmin, renderEditPost);
-router.post('/posts/:id/update', isAuthenticated, isAdmin, updatePost);
+router.get('/posts/:id/edit', upload.single("image"), isAuthenticated, isAdmin, renderEditPost);
+router.post('/posts/:id/update', upload.single("image"),isAuthenticated, isAdmin, updatePost);
 
 
 router.delete('/delete/:id', isAuthenticated, isAdmin, deletePost)
