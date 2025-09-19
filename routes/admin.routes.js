@@ -5,7 +5,7 @@ import {
     deletePost,
     deleteUser, getAdminDashboard,
     getAllPost,
-    getAllUser, renderEditPost,
+    getAllUser, getUserById, renderEditPost,
     updatePost,
     updateUser
 } from "../controllers/admin.controller.js";
@@ -18,7 +18,8 @@ router.get("/", isAuthenticated, isAdmin, getAdminDashboard);
 router.post("/seed", seedAdmin)
 
 router.get('/user', isAuthenticated, isAdmin, getAllUser)
-router.put('/user/:id', isAuthenticated, isAdmin, updateUser)
+router.post('/user/:id', isAuthenticated, isAdmin, updateUser)
+router.get('/user/:id/edit', isAuthenticated, isAdmin, getUserById)
 router.delete('/user/:id', isAuthenticated, isAdmin, deleteUser)
 
 // post controller

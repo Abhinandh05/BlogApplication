@@ -181,7 +181,9 @@
                         </div>
                     </div>
                     <div class="card-actions">
-                        <a href="/users/edit/<%= user.id || user._id %>" class="btn btn-edit">Edit</a>
+
+                        <a href="/api/v1/admin/user/<%= user._id %>/edit" class="btn btn-edit">Edit</a>
+
                         <button onclick="deleteUser('<%= user._id %>')" class="delete-btn">
                             🗑️ Delete
                         </button>

@@ -1,7 +1,7 @@
 import {User} from "../models/user.model.js";
 import {Post} from "../models/post.model.js";
 import {Comment} from "../models/comment.model.js";
-import CommentRoutes from "../routes/comment.routes.js";
+
 
 
 export const getAllUser = async (req, res) =>{
@@ -38,11 +38,7 @@ export const updateUser = async (req, res) =>{
             })
         }
 
-        return res.status(200).json({
-            message:"The user updated success fully",
-            success: true,
-            user
-        })
+        return res.redirect("/api/v1/admin/");
 
     } catch (err){
         console.log("Something went to wrong ")
@@ -51,6 +47,30 @@ export const updateUser = async (req, res) =>{
             success: false
         })
     }
+}
+
+export const getUserById = async (req, res) =>{
+   try{
+       const {id } = req.params;
+       const user = await User.findById(id).select("-password");
+
+       if (!user){
+           return res.status(400).json({
+               message:"User not found ",
+               success: false
+
+           })
+       }
+      return res.render('admin/edituser',{user})
+
+   } catch (err){
+       console.log("something went to wrong please check ")
+       return res.status(500).json({
+           message:"Internal server error",
+           success: false,
+
+       })
+   }
 }
 
 // delete the user by id
