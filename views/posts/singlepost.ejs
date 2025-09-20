@@ -116,6 +116,105 @@
             transform: scale(1.05);
         }
 
+        /* Like Button Styles */
+        .like-section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 1.5rem 2rem;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .like-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .like-button:hover {
+            background: linear-gradient(135deg, #ee5a52, #c44569);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .like-button.liked {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            animation: likeAnimation 0.3s ease;
+        }
+
+        .like-button.liked .heart {
+            animation: heartBeat 0.6s ease;
+        }
+
+        .like-button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 2px 10px rgba(149, 165, 166, 0.3);
+        }
+
+        .heart {
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .like-count {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-left: auto;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            border: 2px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .like-count-number {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .like-count-text {
+            color: #6c757d;
+        }
+
+        .like-status {
+            font-size: 0.9rem;
+            color: #777;
+            font-style: italic;
+        }
+
+        @keyframes likeAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1.1); }
+            75% { transform: scale(1.15); }
+        }
+
         /* Comment Section Styles */
         .comments-section {
             max-width: 800px;
@@ -253,7 +352,7 @@
         }
 
         @media (max-width: 768px) {
-            .post-container, .comments-section {
+            .post-container, .comments-section, .like-section {
                 margin-left: 1rem;
                 margin-right: 1rem;
                 padding: 1rem;
@@ -265,6 +364,16 @@
 
             .nav-links {
                 gap: 1rem;
+            }
+
+            .like-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .like-count {
+                margin-left: 0;
+                margin-top: 0.5rem;
             }
         }
     </style>
@@ -302,10 +411,20 @@
     <a href="/" class="back-link">← Back to Home</a>
 </div>
 
+<!-- Like Section -->
+<div class="like-section">
+    <button id="likeButton" class="like-button" onclick="toggleLike()">
+        <span class="heart">❤️</span>
+        <span id="likeButtonText">Like</span>
+    </button>
+    <div class="like-count">
+        <span id="likeCount">0</span> likes
+    </div>
+    <div class="like-status" id="likeStatus">Loading...</div>
+</div>
 
 <div class="comments-section">
     <h2 class="comments-header">Comments</h2>
-
 
     <div class="comment-form">
         <textarea
@@ -331,10 +450,13 @@
 
 <script>
     const postId = '<%= post._id %>';
+    let isLiked = false;
+    let likeCount = 0;
 
-    // Load comments when page loads
+    // Load comments and like status when page loads
     document.addEventListener('DOMContentLoaded', function() {
         loadComments();
+        loadLikeStatus();
     });
 
     function showMessage(text, type = 'error') {
@@ -345,6 +467,92 @@
         setTimeout(() => {
             messageDiv.innerHTML = '';
         }, 3000);
+    }
+
+    // Load like status
+    async function loadLikeStatus() {
+        try {
+            const response = await fetch(`/${postId}/status`, {
+                credentials: 'include'
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                isLiked = data.isLiked;
+                likeCount = data.likesCount;
+                updateLikeButton();
+                updateLikeStatus();
+            } else {
+                document.getElementById('likeStatus').textContent = 'Unable to load like status';
+            }
+        } catch (error) {
+            console.error('Error loading like status:', error);
+            document.getElementById('likeStatus').textContent = 'Error loading likes';
+        }
+    }
+
+    // Toggle like
+    async function toggleLike() {
+        const likeButton = document.getElementById('likeButton');
+
+        // Disable button during request
+        likeButton.disabled = true;
+
+        try {
+            const response = await fetch(`/${postId}/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                isLiked = data.isLiked;
+                likeCount = data.likeCount;
+                updateLikeButton();
+                updateLikeStatus();
+
+                // Show success message briefly
+                showMessage(data.message, 'success');
+            } else {
+                showMessage(data.message || 'Failed to update like. Please try again.', 'error');
+            }
+        } catch (error) {
+            console.error('Error toggling like:', error);
+            showMessage('Please log in to like this post.', 'error');
+        } finally {
+            likeButton.disabled = false;
+        }
+    }
+
+    // Update like button appearance
+    function updateLikeButton() {
+        const likeButton = document.getElementById('likeButton');
+        const likeButtonText = document.getElementById('likeButtonText');
+        const likeCountElement = document.getElementById('likeCount');
+
+        if (isLiked) {
+            likeButton.classList.add('liked');
+            likeButtonText.textContent = 'Liked';
+        } else {
+            likeButton.classList.remove('liked');
+            likeButtonText.textContent = 'Like';
+        }
+
+        likeCountElement.textContent = likeCount;
+    }
+
+    // Update like status text
+    function updateLikeStatus() {
+        const likeStatusElement = document.getElementById('likeStatus');
+        if (isLiked) {
+            likeStatusElement.textContent = 'You liked this post';
+        } else {
+            likeStatusElement.textContent = 'Click to show your appreciation';
+        }
     }
 
     async function loadComments() {
@@ -398,7 +606,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ content }),
-                credentials: 'include' // Include cookies for authentication
+                credentials: 'include'
             });
 
             const data = await response.json();
@@ -406,7 +614,7 @@
             if (data.success) {
                 showMessage('Comment posted successfully!', 'success');
                 document.getElementById('commentContent').value = '';
-                loadComments(); // Reload comments to show the new one
+                loadComments();
             } else {
                 showMessage(data.message || 'Failed to post comment. Please try again.', 'error');
             }
@@ -414,7 +622,6 @@
             console.error('Error posting comment:', error);
             showMessage('Failed to post comment. Please check your connection and try again.', 'error');
         } finally {
-            // Re-enable button
             submitBtn.disabled = false;
             submitBtn.textContent = 'Post Comment';
         }
