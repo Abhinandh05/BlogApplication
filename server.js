@@ -29,7 +29,7 @@ app.set("views", "./views");
 // api calls
 
 app.use("/api/v1/user", userRoute);
-app.use("/  ", postRoute);
+app.use("/", postRoute);
 app.use("/api/v1/comment", commentRoute)
 app.use("/api/v1/admin", adminRoutes)
 
@@ -63,5 +63,6 @@ app.get("/create", (req, res) => {
 app.get("/admin", (req, res) => {
     res.render("admin/dashboard", { error: null });
 });
+
 
 

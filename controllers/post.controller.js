@@ -188,3 +188,84 @@ export const renderUpdateForm = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+// start with the like button
+
+export const likeToggle = async (req, res) =>{
+    try {
+        const {id} = req.params;
+        const userId = req.user._id;
+
+        const post = await Post.findById(id);
+        if (!post){
+            return res.status(400).json({
+                message:"Post not found",
+                success:false
+            })
+
+
+        }
+        const isLiked = post.likes.includes(userId);
+        if (isLiked){
+            post.likes.pull(userId);
+            post.likeCount = Math.max(0, post.likeCount - 1 );
+
+        } else {
+            post.likes.push(userId);
+            post.likeCount += 1;
+
+        }
+        await post.save();
+
+        return res.status(200).json({
+            message: isLiked ? " Like removed ":"Postlike ," ,
+            success:true,
+            likeCount: post.likeCount,
+            isLiked: !isLiked
+        });
+
+
+
+
+    } catch (error){
+        console.log("Something went to wrong ")
+        return res.status(500).json({
+            message:"Internal server error",
+            success:false
+
+
+        })
+    }
+}
+
+export const getLikedStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user ? req.user._id : null;
+
+        // Corrected the find method
+        const post = await Post.findById(id);
+        if (!post) {
+            return res.status(404).json({
+                message: "The post is not found",
+                success: false
+            });
+        }
+
+        const isLiked = userId ? post.likes.includes(userId) : false;
+
+        return res.status(200).json({
+            message: "success",
+            success: true,
+            likesCount: post.likes.length,
+            isLiked
+        });
+
+    } catch (error) {
+        console.error("Something went wrong:", error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
+    }
+}

@@ -3,8 +3,8 @@ import isAuthenticated from "../middleware/isAuthenticated.js";
 import {
     createPost,
     deletePost,
-    getAllPost,
-    getPostById,
+    getAllPost, getLikedStatus,
+    getPostById, likeToggle,
     renderUpdateForm,
     updatePost
 } from "../controllers/post.controller.js";
@@ -20,6 +20,11 @@ router.get('/update/:id', upload.single("image"),isAuthenticated, renderUpdateFo
 router.delete('/delete/:id', isAuthenticated, deletePost);
 router.get('/', getAllPost);
 router.get('/single/:id', getPostById);
+
+router.get("/:id/status", getLikedStatus);
+
+// Toggle like (auth required)
+router.post("/:id/like", isAuthenticated, likeToggle);
 
 
 export default router;
