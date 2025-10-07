@@ -1,7 +1,8 @@
 import {User} from "../models/user.model.js";
 import bcrypt from "bcryptjs"
 import jwt from 'jsonwebtoken';
-
+import {EMAIL_VERIFY_TEMPLATE} from "../config/emailTemplates.js";
+import transporter, {sendEmail} from "../config/nodemailer.js";
 
 
 export const register = async (req, res) => {
@@ -74,24 +75,17 @@ export const login = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000, // 1 day
         });
 
-
-       if (user.role === 'admin'){
-           return res.redirect('/admin')
-       } else {
-           return res.redirect('/')
-       }
+        if (user.role === 'admin'){
+            return res.redirect('/admin')
+        } else {
+            return res.redirect('/')
+        }
 
     } catch (err) {
         console.log("Something went wrong", err);
         return res.render("auth/login", { error: "Something went wrong while logging in" });
     }
 };
-
-
-
-
-
-
 
 export const getUserProfile = async (req, res) => {
     try {
@@ -109,26 +103,93 @@ export const getUserProfile = async (req, res) => {
     }
 };
 
-
-
 export const logout = async (req, res) =>{
     try{
-        res
-            .cookie("token", "", {
-                httpOnly: true,
-                secure: true,
-                sameSite: "None",
-                expires: new Date(0)
-            })
+        res.cookie("token", "", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",
+            expires: new Date(0)
+        });
         return res.redirect("/login");
 
     }catch (err){
-        console.log("Some thing went to wrong", err )
+        console.log("Something went wrong", err);
         return res.status(500).json({
-            message:"Something went to wrong while Logout time ",
+            message:"Something went wrong while logging out",
             success: false
-        })
+        });
     }
-}
+};
 
-export const sendVerifyOtp =
+
+export const sendVerifyOtp = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(400).json({ message: "User not found", success: false });
+        }
+
+        if (user.isAccountVerified) {
+            return res.status(400).json({ message: "Account already verified", success: false });
+        }
+
+        const otp = String(Math.floor(100000 + Math.random() * 900000)); // 6-digit OTP
+
+        user.verifyOtp = otp;
+        user.verifyOtpExpiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
+
+        await user.save();
+
+        // Send OTP email
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: "Verify Your Account",
+            // text: `Your verification code is: ${otp}. Please verify your account using this OTP.`,
+            html:EMAIL_VERIFY_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", user.email)
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        return res.json({ message: "Verification code sent successfully", success: true });
+    } catch (error) {
+        return res.status(500).json({ message: error.message, success: false });
+    }
+};
+
+export const verifyEmail = async (req, res) => {
+    const {  otp } = req.body;
+    const userId = req.user._id;
+
+    if (!userId || !otp) {
+        return res.status(400).json({ message: "All fields are required", success: false });
+    }
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(400).json({ message: "User not found", success: false });
+        }
+
+        if (user.verifyOtp !== String(otp)) {
+            return res.status(400).json({ message: "Invalid OTP", success: false });
+        }
+
+        if (user.verifyOtpExpiresAt < Date.now()) {
+            return res.status(400).json({ message: "OTP expired", success: false });
+        }
+
+        user.isAccountVerified = true;
+        user.verifyOtp = "";
+        user.verifyOtpExpiresAt = 0;
+
+        await user.save();
+        return res.json({ message: "Email verified successfully", success: true });
+    } catch (error) {
+        return res.status(500).json({ message: error.message, success: false });
+    }
+};

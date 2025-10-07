@@ -1,46 +1,46 @@
 import nodemailer from 'nodemailer';
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const transporter = nodemailer.createTransport({
     host: 'smtp-relay.brevo.com',
     port: 587,
     auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user:process.env.SMTP_USER,
+        pass:process.env.SMTP_PASS,
     },
 });
+console.log("SMTP_USER:", process.env.SMTP_USER);
+console.log("SMTP_PASS:", process.env.SMTP_PASS ? "✅ Loaded" : "❌ Missing");
 
 const gmailTransporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-        user: process.env.EMAIL_USER, // Gmail email
-        pass: process.env.EMAIL_PASS, // Gmail password or App Password
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
     },
 });
 
 // Function to send an email
 export const sendEmail = async (to, subject, html) => {
     try {
-        await brevoTransporter.sendMail({
-            from: `"Blog Applicaiton" <${process.env.SMTP_USER}>`,
+        await transporter.sendMail({  // Changed from brevoTransporter
+            from: `"blog" <${process.env.SMTP_USER}>`,
             to,
             subject,
             html,
         });
-        //   console.log("Email sent successfully via Brevo to", to);
     } catch (error) {
-        //   console.error("Error sending email via Brevo, trying Gmail...", error);
-
-        // Fallback to Gmail if Brevo fails
         try {
             await gmailTransporter.sendMail({
-                from: `"Blog Applicaiton" <${process.env.EMAIL_USER}>`,
+                from: `"blog" <${process.env.EMAIL_USER}>`,
                 to,
                 subject,
                 html,
             });
-            // console.log("Email sent successfully via Gmail to", to);
         } catch (gmailError) {
-            // console.error("Error sending email via Gmail as well:", gmailError);
+            throw gmailError; // Re-throw to handle in calling function
         }
     }
 };
