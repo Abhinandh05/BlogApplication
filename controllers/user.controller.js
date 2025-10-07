@@ -130,3 +130,5 @@ export const logout = async (req, res) =>{
         })
     }
 }
+
+export const sendVerifyOtp =

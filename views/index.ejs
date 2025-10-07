@@ -3,565 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Blog</title>
+    <title>InkSphere Blog & Chat</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: Arial, sans-serif; background:#f4f4f9; }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-        }
+        /* Navbar */
+        .navbar { background:#fff; padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 10px rgba(0,0,0,0.1); position:sticky; top:0; z-index:1000; }
+        .navbar .logo { font-weight:bold; color:#3498db; font-size:1.5rem; text-decoration:none; }
+        .nav-links { display:flex; gap:1rem; align-items:center; }
+        .nav-links a { text-decoration:none; color:#333; font-weight:500; }
+        .nav-links a:hover { color:#3498db; }
 
-        /* Navigation Bar */
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 1rem 0;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-        }
+        /* Hero */
+        .hero { height:30vh; background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80'); background-size:cover; display:flex; justify-content:center; align-items:center; color:#fff; text-align:center; }
+        .hero h1 { font-size:2.5rem; margin-bottom:0.5rem; }
+        .hero p { font-size:1.2rem; opacity:0.9; }
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* Blogs */
+        .blog-section { max-width:1200px; margin:2rem auto; padding:0 1rem; }
+        .blog-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.5rem; }
+        .blog-card { background:#fff; padding:1rem; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); display:flex; flex-direction:column; }
+        .blog-card img { width:100%; border-radius:8px; margin-bottom:0.5rem; }
+        .blog-card h2 { font-size:1.2rem; margin-bottom:0.5rem; }
+        .blog-card p { flex-grow:1; margin-bottom:0.5rem; }
+        .blog-card a { color:#3498db; text-decoration:none; font-weight:500; }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #2c3e50;
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #2c3e50;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: #3498db;
-        }
-
-        /* Hero Section with Ocean Image */
-        .hero-section {
-            height: 100vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
-            url('https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            color: white;
-            text-align: center;
-        }
-
-        .hero-content {
-            max-width: 800px;
-            padding: 0 2rem;
-        }
-
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 300;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .hero-subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        /* Search Bar */
-        .search-container {
-            position: relative;
-            max-width: 500px;
-            width: 100%;
-            margin: 2rem auto;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 1rem 1.5rem;
-            padding-right: 4rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-bar:focus {
-            background: rgba(255, 255, 255, 1);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .search-btn {
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #3498db;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .search-btn:hover {
-            background: #2980b9;
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .search-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: white;
-        }
-
-        /* Content Section */
-        .content-section {
-            padding: 4rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .welcome-message {
-            text-align: center;
-            font-size: 1.2rem;
-            color: #2c3e50;
-            background: #f8f9fa;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .blog-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .blog-card {
-            background: #ffffff;
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #f0f0f0;
-        }
-
-        .blog-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-            border-color: #3498db;
-        }
-
-        .card-header h2 {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            margin-bottom: 1rem;
-            line-height: 1.4;
-        }
-
-        .card-body {
-            flex-grow: 1;
-            font-size: 1rem;
-            color: #555;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-
-        .card-footer {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .post-meta {
-            font-size: 0.9rem;
-            color: #777;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .card-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .read-more {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: 1px solid #3498db;
-            background: transparent;
-        }
-
-        .read-more:hover {
-            background: #3498db;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .edit-btn, .delete-btn {
-            padding: 1.4rem 0.8rem;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 70px;
-            height: 32px;
-        }
-
-        .edit-btn {
-            background: #f39c12;
-            color: white;
-            border: 1px solid #f39c12;
-        }
-
-        .edit-btn:hover {
-            background: #e67e22;
-            border-color: #e67e22;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
-        }
-
-        .delete-btn {
-            background: #e74c3c;
-            color: white;
-            border: 1px solid #e74c3c;
-        }
-
-        .delete-btn:hover {
-            background: #c0392b;
-            border-color: #c0392b;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
-        }
-
-        .delete-form {
-            display: inline-block;
-            margin: 0;
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .hero-title {
-                font-size: 2.5rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1rem;
-            }
-
-            .search-container {
-                max-width: 90%;
-            }
-
-            .nav-container {
-                padding: 0 1rem;
-            }
-
-            .content-section {
-                padding: 2rem 1rem;
-            }
-
-            .card-actions {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .read-more {
-                align-self: stretch;
-                text-align: center;
-            }
-
-            .action-buttons {
-                justify-content: center;
-                width: 100%;
-            }
-
-            .edit-btn, .delete-btn {
-                flex: 1;
-                max-width: 120px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .blog-list {
-                grid-template-columns: 1fr;
-            }
-
-            .blog-card {
-                padding: 1rem;
-            }
-
-            .action-buttons {
-                gap: 0.75rem;
-            }
-        }
-
-        /* Scroll Animation */
-        .hero-section {
-            animation: fadeIn 1.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .search-container {
-            animation: slideUp 1.5s ease-out 0.5s both;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .card-image {
-            width: 100%;
-            overflow: hidden;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-        }
-
-        .card-image img {
-            width: 100%;
-            height: 200px; /* Adjust height as needed */
-            object-fit: cover; /* Ensures image fills container without distortion */
-            display: block;
-            border-radius: 12px;
-        }
-
-
+        /* Chat Sidebar */
+        .chat-toggle { position:fixed; bottom:25px; right:25px; width:60px; height:60px; border-radius:50%; background:#3498db; color:#fff; display:flex; justify-content:center; align-items:center; font-size:1.5rem; cursor:pointer; z-index:2000; }
+        .chat-sidebar { position:fixed; right:-350px; top:0; width:350px; height:100%; background:#fff; box-shadow:-2px 0 10px rgba(0,0,0,0.1); transition:right 0.3s; display:flex; flex-direction:column; z-index:2500; }
+        .chat-sidebar.active { right:0; }
+        .chat-header { padding:1rem; background:#3498db; color:#fff; display:flex; justify-content:space-between; align-items:center; }
+        .chat-header button { background:none; border:none; font-size:1.5rem; color:#fff; cursor:pointer; }
+        .chat-list { flex-grow:1; overflow-y:auto; }
+        .chat-user { display:flex; align-items:center; padding:0.5rem 1rem; cursor:pointer; border-bottom:1px solid #f0f0f0; }
+        .chat-user:hover { background:#f9f9f9; }
+        .chat-user .avatar { width:40px; height:40px; border-radius:50%; margin-right:0.5rem; position:relative; display:flex; justify-content:center; align-items:center; font-size:1rem; color:#fff; background:#3498db; }
+        .chat-user .status-dot { position:absolute; bottom:0; right:0; width:10px; height:10px; border-radius:50%; border:2px solid #fff; }
+        .status-online { background:#2ecc71; }
+        .status-offline { background:#ccc; }
+        .chat-messages { flex-grow:1; overflow-y:auto; padding:0.5rem; background:#e5ddd5; }
+        .message { margin:0.5rem 0; display:flex; }
+        .message.self { justify-content:flex-end; }
+        .message.self p { background:#25d366; color:#fff; }
+        .message.other p { background:#fff; color:#333; }
+        .message p { padding:0.5rem 1rem; border-radius:20px; max-width:70%; }
+        .chat-input { display:flex; padding:0.5rem; border-top:1px solid #ddd; }
+        .chat-input input { flex-grow:1; padding:0.5rem 1rem; border-radius:20px; border:1px solid #ccc; outline:none; }
+        .chat-input button { margin-left:0.5rem; padding:0.5rem 1rem; border:none; border-radius:20px; background:#3498db; color:#fff; cursor:pointer; }
     </style>
 </head>
 <body>
-<!-- Navigation Bar -->
+
+<!-- Navbar -->
 <nav class="navbar">
-    <div class="nav-container">
-        <a href="#" class="logo">InkSphere 🌊</a>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#blog">Blog</a></li>
-            <li><a href="/create">Post</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+    <a href="#" class="logo">InkSphere 🌊</a>
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#blog">Blog</a>
+        <a href="/create">Post</a>
+        <% if(user){ %>
+            <a href="/api/v1/user/logout">Logout</a>
+        <% } else { %>
+            <a href="/login">Login</a>
+            <a href="/signup">Signup</a>
+        <% } %>
     </div>
 </nav>
 
-<!-- Hero Section with Ocean Background -->
-<section class="hero-section">
-    <div class="hero-content">
-        <h1 class="hero-title">Welcome to my Blog Platform 😊</h1>
-        <p class="hero-subtitle">Dive into stories that inspire, educate, and connect us all</p>
-
-        <!-- Search Bar -->
-        <div class="search-container">
-            <input type="text" class="search-bar" placeholder="Search articles, topics, or inspiration...">
-            <button class="search-btn" type="submit">
-                <svg viewBox="0 0 24 24">
-                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                </svg>
-            </button>
-        </div>
+<!-- Hero -->
+<section class="hero">
+    <div>
+        <h1>Welcome to InkSphere</h1>
+        <p>Read blogs & chat with other users in real-time!</p>
     </div>
 </section>
 
-<!-- Content Section -->
-<section class="content-section" id="blog">
-    <div class="welcome-message">
-        <p><%= message %></p>
-    </div>
-
+<!-- Blogs -->
+<section class="blog-section" id="blog">
     <div class="blog-list">
-        <% if (posts.length > 0) { %>
-            <% posts.forEach(post => { %>
-                <div class="blog-card">
-                    <div class="card-header">
-                        <h2><%= post.title %></h2>
-                    </div>
-
-                    <% if (post.image) { %>
-                        <div class="card-image">
-                            <img src="<%= post.image %>" alt="<%= post.title %>" />
-                        </div>
-                    <% } %>
-
-                    <div class="card-body">
-                        <p><%= post.content.substring(0, 200) %>...</p>
-                    </div>
-
-                    <div class="card-footer">
-                        <div class="post-meta">
-                            <span>✍️ <%= post.author?.fullName || "Unknown" %></span>
-                            <span>•</span>
-                            <span><%= post.createdAt.toDateString() %></span>
-                        </div>
-
-                        <div class="card-actions">
-                            <a href="/single/<%= post._id %>" class="read-more">Read More →</a>
-
-                            <div class="action-buttons">
-                                <a href="/update/<%= post._id %>" class="edit-btn">✏️ Edit</a>
-
-                                <form action="/delete/<%= post._id %>" method="POST" class="delete-form" onsubmit="return handleDelete(event, '<%= post._id %>')">
-                                    <button type="submit" class="delete-btn">🗑️ Delete</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <% }) %>
-        <% } else { %>
-            <div class="welcome-message">
-                <p>No blog posts available yet. <a href="/create">Create your first post!</a></p>
+        <% posts.forEach(post => { %>
+            <div class="blog-card">
+                <% if(post.image){ %><img src="<%= post.image %>" alt=""><% } %>
+                <h2><%= post.title %></h2>
+                <p><%= post.content.substring(0,100) %>...</p>
+                <a href="/single/<%= post._id %>">Read More</a>
             </div>
-        <% } %>
+        <% }) %>
     </div>
-
 </section>
 
+<!-- Chat Sidebar -->
+<div class="chat-sidebar" id="chatSidebar">
+    <div class="chat-header">
+        <h3>💬 Chats</h3>
+        <button id="closeChat">×</button>
+    </div>
+    <div class="chat-list" id="chatUsers"></div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Type a message...">
+        <button id="sendBtn">Send</button>
+    </div>
+</div>
+
+<!-- Toggle Button -->
+<div class="chat-toggle" id="chatToggle">💬</div>
+
+<script src="/socket.io/socket.io.js"></script>
 <script>
-    // Add some interactive functionality
-    document.querySelector('.search-bar').addEventListener('focus', function() {
-        this.parentElement.style.transform = 'scale(1.02)';
-    });
+    const socket = io();
+    const CURRENT_USER_ID = "<%= user?._id %>";
+    const CURRENT_USERNAME = "<%= user?.username %>";
 
-    document.querySelector('.search-bar').addEventListener('blur', function() {
-        this.parentElement.style.transform = 'scale(1)';
-    });
+    if(CURRENT_USER_ID){
+        socket.emit("userOnline", { userId: CURRENT_USER_ID, username: CURRENT_USERNAME });
+    }
 
-    // Search functionality
-    document.querySelector('.search-btn').addEventListener('click', function() {
-        const searchTerm = document.querySelector('.search-bar').value;
-        if (searchTerm.trim()) {
-            alert(`Searching for: ${searchTerm}`);
-            // Here you would typically handle the search functionality
-        }
-    });
+    const chatSidebar = document.getElementById("chatSidebar");
+    document.getElementById("chatToggle").onclick = () => chatSidebar.classList.add("active");
+    document.getElementById("closeChat").onclick = () => chatSidebar.classList.remove("active");
 
-    // Enter key search
-    document.querySelector('.search-bar').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            document.querySelector('.search-btn').click();
-        }
-    });
+    let selectedUserId = null;
 
-    // Smooth scroll animation for cards
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
+    socket.on("onlineUsers", users => {
+        const container = document.getElementById("chatUsers");
+        container.innerHTML = "";
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
+        // Global Chat
+        const globalDiv = document.createElement("div");
+        globalDiv.classList.add("chat-user");
+        globalDiv.innerHTML = `
+        <div class="avatar">🌐</div>
+        <div class="user-info"><span class="username">Global Chat</span></div>
+    `;
+        globalDiv.onclick = () => selectUser(null, "Global");
+        container.appendChild(globalDiv);
+
+        users.forEach(u => {
+            if(u.user._id !== CURRENT_USER_ID){
+                const div = document.createElement("div");
+                div.classList.add("chat-user");
+                div.innerHTML = `
+                <div class="avatar">
+                    ${u.user.username[0].toUpperCase()}
+                    <span class="status-dot ${u.socketId ? 'status-online' : 'status-offline'}"></span>
+                </div>
+                <div class="user-info">
+                    <span class="username">${u.user.username}</span>
+                </div>
+            `;
+                div.onclick = () => selectUser(u.user._id, u.user.username);
+                container.appendChild(div);
             }
         });
-    }, observerOptions);
-
-    // Observe all blog cards
-    document.addEventListener('DOMContentLoaded', () => {
-        const cards = document.querySelectorAll('.blog-card');
-        cards.forEach((card, index) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
-            observer.observe(card);
-        });
     });
-    async function handleDelete(event, postId) {
-        event.preventDefault();
 
-        if (!confirm("Are you sure you want to delete this post?")) return false;
+    function selectUser(userId, username){
+        selectedUserId = userId;
+        document.getElementById("chatMessages").innerHTML = "";
+        const url = userId ? `/api/v1/message/user/${userId}` : `/api/v1/message/all`;
 
-        const res = await fetch(`/delete/${postId}`, {
-            method: "DELETE"
-        });
-
-        const data = await res.json();
-        alert(data.message);
-
-        if (res.ok) {
-            window.location.href = "/";
-        }
-        return false;
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                data.messages.forEach(m => renderMessage(
+                    m.sender._id === CURRENT_USER_ID ? "self" : "other",
+                    m.content
+                ));
+            });
     }
+
+    function renderMessage(type, content){
+        const container = document.getElementById("chatMessages");
+        const div = document.createElement("div");
+        div.classList.add("message", type);
+        div.innerHTML = `<p>${content}</p>`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    document.getElementById("sendBtn").onclick = () => {
+        const input = document.getElementById("chatInput");
+        if(input.value.trim()){
+            socket.emit("sendMessage", {
+                senderId: CURRENT_USER_ID,
+                senderName: CURRENT_USERNAME,
+                receiverId: selectedUserId,
+                content: input.value
+            });
+            input.value = "";
+        }
+    };
+
+    socket.on("newMessage", msg => {
+        if(!msg.receiver && selectedUserId === null){
+            renderMessage(msg.sender._id === CURRENT_USER_ID ? "self" : "other", msg.content);
+        } else if(msg.sender._id === selectedUserId || msg.receiver?._id === selectedUserId){
+            renderMessage(msg.sender._id === CURRENT_USER_ID ? "self" : "other", msg.content);
+        }
+    });
 </script>
 </body>
 </html>
